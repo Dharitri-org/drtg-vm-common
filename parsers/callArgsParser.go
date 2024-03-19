@@ -37,7 +37,7 @@ func (parser *callArgsParser) parseFunction(tokens []string) (string, error) {
 		return "", ErrNilFunction
 	}
 
-	function := tokens[indexOfFunction]
+	function := string(tokens[indexOfFunction])
 	return function, nil
 }
 

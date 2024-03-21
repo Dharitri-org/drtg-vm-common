@@ -3,6 +3,7 @@ package builtInFunctions
 import (
 	"bytes"
 	"math/big"
+	"strings"
 	"testing"
 
 	"github.com/Dharitri-org/drtg-core/core"
@@ -216,6 +217,41 @@ func TestDCTTransfer_ProcessBuiltInFunctionDestInShard(t *testing.T) {
 	_ = marshaller.Unmarshal(dctToken, marshaledData)
 	assert.True(t, dctToken.Value.Cmp(big.NewInt(10)) == 0)
 	assert.Equal(t, uint64(0), vmOutput.GasRemaining)
+}
+
+func TestDCTTransfer_ProcessBuiltInFunctionTooLongValue(t *testing.T) {
+	t.Parallel()
+
+	marshaller := &mock.MarshalizerMock{}
+	transferFunc, _ := NewDCTTransferFunc(10, marshaller, &mock.GlobalSettingsHandlerStub{}, &mock.ShardCoordinatorStub{}, &mock.DCTRoleHandlerStub{}, &mock.EnableEpochsHandlerStub{
+		IsTransferToMetaFlagEnabledField:                     false,
+		IsCheckCorrectTokenIDForTransferRoleFlagEnabledField: true,
+	})
+	_ = transferFunc.SetPayableChecker(&mock.PayableHandlerStub{})
+
+	bigValueStr := "1" + strings.Repeat("0", 1000)
+	bigValue, _ := big.NewInt(0).SetString(bigValueStr, 10)
+	input := &vmcommon.ContractCallInput{
+		VMInput: vmcommon.VMInput{
+			GasProvided: 50,
+			CallValue:   big.NewInt(0),
+			Arguments:   [][]byte{[]byte("tkn"), bigValue.Bytes()},
+		},
+	}
+	accDst := mock.NewUserAccount([]byte("dst"))
+
+	// before the activation of the flag, large values should not return error
+	vmOutput, err := transferFunc.ProcessBuiltinFunction(nil, accDst, input)
+	assert.Nil(t, err)
+	assert.NotEmpty(t, vmOutput)
+
+	// after the activation, it should return an error
+	transferFunc.enableEpochsHandler = &mock.EnableEpochsHandlerStub{
+		IsConsistentTokensValuesLengthCheckEnabledField: true,
+	}
+	vmOutput, err = transferFunc.ProcessBuiltinFunction(nil, accDst, input)
+	assert.Equal(t, "invalid arguments to process built-in function: max length for dct transfer value is 100", err.Error())
+	assert.Empty(t, vmOutput)
 }
 
 func TestDCTTransfer_SndDstFrozen(t *testing.T) {

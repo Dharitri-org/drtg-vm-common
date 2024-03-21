@@ -3,6 +3,7 @@ package builtInFunctions
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 	"sync"
 
@@ -96,6 +97,11 @@ func (e *dctTransfer) ProcessBuiltinFunction(
 		return nil, ErrInvalidRcvAddr
 	}
 
+	if e.enableEpochsHandler.IsConsistentTokensValuesLengthCheckEnabled() {
+		if len(vmInput.Arguments[1]) > core.MaxLenForDCTIssueMint {
+			return nil, fmt.Errorf("%w: max length for dct transfer value is %d", ErrInvalidArguments, core.MaxLenForDCTIssueMint)
+		}
+	}
 	value := big.NewInt(0).SetBytes(vmInput.Arguments[1])
 	if value.Cmp(zero) <= 0 {
 		return nil, ErrNegativeValue
@@ -148,6 +154,7 @@ func (e *dctTransfer) ProcessBuiltinFunction(
 			}
 
 			addOutputTransferToVMOutput(
+				1,
 				vmInput.CallerAddr,
 				string(vmInput.Arguments[core.MinLenArgumentsDCTTransfer]),
 				callArgs,
@@ -172,6 +179,7 @@ func (e *dctTransfer) ProcessBuiltinFunction(
 	// cross-shard DCT transfer call through a smart contract
 	if vmcommon.IsSmartContractAddress(vmInput.CallerAddr) {
 		addOutputTransferToVMOutput(
+			1,
 			vmInput.CallerAddr,
 			core.BuiltInFunctionDCTTransfer,
 			vmInput.Arguments,
@@ -186,6 +194,7 @@ func (e *dctTransfer) ProcessBuiltinFunction(
 }
 
 func addOutputTransferToVMOutput(
+	index uint32,
 	senderAddress []byte,
 	function string,
 	arguments [][]byte,
@@ -199,6 +208,7 @@ func addOutputTransferToVMOutput(
 		dctTransferTxData += "@" + hex.EncodeToString(arg)
 	}
 	outTransfer := vmcommon.OutputTransfer{
+		Index:         index,
 		Value:         big.NewInt(0),
 		GasLimit:      vmOutput.GasRemaining,
 		GasLocked:     gasLocked,
@@ -310,6 +320,9 @@ func getDCTDataFromKey(
 ) (*dct.DCToken, error) {
 	dctData := &dct.DCToken{Value: big.NewInt(0), Type: uint32(core.Fungible)}
 	marshaledData, _, err := userAcnt.AccountDataHandler().RetrieveValue(key)
+	if core.IsGetNodeFromDBError(err) {
+		return nil, err
+	}
 	if err != nil || len(marshaledData) == 0 {
 		return dctData, nil
 	}

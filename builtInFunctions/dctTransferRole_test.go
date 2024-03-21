@@ -146,6 +146,19 @@ func TestDCTTransferRoleProcessBuiltInFunction_AddNewAddresses(t *testing.T) {
 	assert.Equal(t, len(addresses.Roles), 0)
 }
 
+func TestGetDctRolesForAcnt(t *testing.T) {
+	t.Parallel()
+
+	acc := &mock.AccountWrapMock{
+		RetrieveValueCalled: func(_ []byte) ([]byte, uint32, error) {
+			return nil, 0, core.NewGetNodeFromDBErrWithKey([]byte("key"), errors.New("error"), "")
+		},
+	}
+	addresses, _, err := getDCTRolesForAcnt(&mock.MarshalizerMock{}, acc, []byte("key"))
+	assert.Nil(t, addresses)
+	assert.True(t, core.IsGetNodeFromDBError(err))
+}
+
 func TestDCTTransferRoleIsSenderOrDestinationWithTransferRole(t *testing.T) {
 	accounts := &mock.AccountsStub{}
 	marshaller := &mock.MarshalizerMock{}

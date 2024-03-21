@@ -131,6 +131,9 @@ func (e *dctDataStorage) getDCTNFTTokenOnDestinationWithAccountsAdapterOptions(
 		Type:  uint32(core.Fungible),
 	}
 	marshaledData, _, err := accnt.AccountDataHandler().RetrieveValue(dctNFTTokenKey)
+	if core.IsGetNodeFromDBError(err) {
+		return nil, false, err
+	}
 	if err != nil || len(marshaledData) == 0 {
 		return dctData, true, nil
 	}
@@ -165,6 +168,9 @@ func (e *dctDataStorage) getDCTDigitalTokenDataFromSystemAccount(
 	}
 
 	marshaledData, _, err := systemAcc.AccountDataHandler().RetrieveValue(tokenKey)
+	if core.IsGetNodeFromDBError(err) {
+		return nil, systemAcc, err
+	}
 	if err != nil || len(marshaledData) == 0 {
 		return nil, systemAcc, nil
 	}
@@ -212,6 +218,9 @@ func (e *dctDataStorage) checkCollectionIsFrozenForAccount(
 		Type:  uint32(core.Fungible),
 	}
 	marshaledData, _, err := accnt.AccountDataHandler().RetrieveValue(dctTokenKey)
+	if core.IsGetNodeFromDBError(err) {
+		return err
+	}
 	if err != nil || len(marshaledData) == 0 {
 		return nil
 	}
@@ -382,7 +391,10 @@ func (e *dctDataStorage) saveDCTMetaDataToSystemAccount(
 		return err
 	}
 
-	currentSaveData, _, _ := systemAcc.AccountDataHandler().RetrieveValue(dctNFTTokenKey)
+	currentSaveData, _, err := systemAcc.AccountDataHandler().RetrieveValue(dctNFTTokenKey)
+	if core.IsGetNodeFromDBError(err) {
+		return err
+	}
 	err = e.saveMetadataIfRequired(dctNFTTokenKey, systemAcc, currentSaveData, dctData)
 	if err != nil {
 		return err
@@ -466,6 +478,9 @@ func (e *dctDataStorage) setReservedToNilForOldToken(
 		return ErrNilUserAccount
 	}
 	dataOnUserAcc, _, errNotCritical := userAcc.AccountDataHandler().RetrieveValue(dctNFTTokenKey)
+	if core.IsGetNodeFromDBError(errNotCritical) {
+		return errNotCritical
+	}
 	shouldIgnoreToken := errNotCritical != nil || len(dataOnUserAcc) == 0
 	if shouldIgnoreToken {
 		return nil

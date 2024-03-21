@@ -206,7 +206,10 @@ func (e *dctGlobalSettings) getGlobalMetadata(dctTokenKey []byte) (*DCTGlobalMet
 		return nil, err
 	}
 
-	val, _, _ := systemSCAccount.AccountDataHandler().RetrieveValue(dctTokenKey)
+	val, _, err := systemSCAccount.AccountDataHandler().RetrieveValue(dctTokenKey)
+	if core.IsGetNodeFromDBError(err) {
+		return nil, err
+	}
 	dctMetaData := DCTGlobalMetadataFromBytes(val)
 	return &dctMetaData, nil
 }

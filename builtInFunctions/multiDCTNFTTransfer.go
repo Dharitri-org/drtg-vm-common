@@ -215,6 +215,7 @@ func (e *dctNFTMultiTransfer) ProcessBuiltinFunction(
 		}
 
 		addOutputTransferToVMOutput(
+			1,
 			vmInput.CallerAddr,
 			string(vmInput.Arguments[minNumOfArguments]),
 			callArgs,
@@ -281,6 +282,9 @@ func (e *dctNFTMultiTransfer) processDCTNFTMultiTransferOnSenderShard(
 
 	for i := uint64(0); i < numOfTransfers; i++ {
 		tokenStartIndex := startIndex + i*argumentsPerTransfer
+		if len(vmInput.Arguments[tokenStartIndex+2]) > core.MaxLenForDCTIssueMint && e.enableEpochsHandler.IsConsistentTokensValuesLengthCheckEnabled() {
+			return nil, fmt.Errorf("%w: max length for a transfer value is %d", ErrInvalidArguments, core.MaxLenForDCTIssueMint)
+		}
 		listTransferData[i] = &vmcommon.DCTTransfer{
 			DCTValue:      big.NewInt(0).SetBytes(vmInput.Arguments[tokenStartIndex+2]),
 			DCTTokenName:  vmInput.Arguments[tokenStartIndex],
@@ -297,6 +301,9 @@ func (e *dctNFTMultiTransfer) processDCTNFTMultiTransferOnSenderShard(
 			dstAddress,
 			listTransferData[i],
 			vmInput.ReturnCallAfterError)
+		if core.IsGetNodeFromDBError(err) {
+			return nil, err
+		}
 		if err != nil {
 			return nil, fmt.Errorf("%w for token %s", err, string(listTransferData[i].DCTTokenName))
 		}
@@ -462,6 +469,7 @@ func (e *dctNFTMultiTransfer) createDCTNFTOutputTransfers(
 			vmOutput.GasRemaining = 0
 		}
 		addNFTTransferToVMOutput(
+			1,
 			vmInput.CallerAddr,
 			dstAddress,
 			core.BuiltInFunctionMultiDCTNFTTransfer,
@@ -482,6 +490,7 @@ func (e *dctNFTMultiTransfer) createDCTNFTOutputTransfers(
 		}
 
 		addOutputTransferToVMOutput(
+			1,
 			vmInput.CallerAddr,
 			string(vmInput.Arguments[minNumOfArguments]),
 			callArgs,

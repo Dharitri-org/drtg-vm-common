@@ -260,6 +260,9 @@ func (e *dctDeleteMetaData) getDCTDigitalTokenDataFromSystemAccount(
 	dctNFTTokenKey []byte,
 ) (*dct.DCToken, error) {
 	marshaledData, _, err := systemAcc.AccountDataHandler().RetrieveValue(dctNFTTokenKey)
+	if core.IsGetNodeFromDBError(err) {
+		return nil, err
+	}
 	if err != nil || len(marshaledData) == 0 {
 		return nil, nil
 	}

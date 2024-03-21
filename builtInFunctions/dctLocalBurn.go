@@ -2,6 +2,7 @@ package builtInFunctions
 
 import (
 	"bytes"
+	"fmt"
 	"math/big"
 	"sync"
 
@@ -16,6 +17,7 @@ type dctLocalBurn struct {
 	marshaller            vmcommon.Marshalizer
 	globalSettingsHandler vmcommon.ExtendedDCTGlobalSettingsHandler
 	rolesHandler          vmcommon.DCTRoleHandler
+	enableEpochsHandler   vmcommon.EnableEpochsHandler
 	funcGasCost           uint64
 	mutExecution          sync.RWMutex
 }
@@ -26,6 +28,7 @@ func NewDCTLocalBurnFunc(
 	marshaller vmcommon.Marshalizer,
 	globalSettingsHandler vmcommon.ExtendedDCTGlobalSettingsHandler,
 	rolesHandler vmcommon.DCTRoleHandler,
+	enableEpochsHandler vmcommon.EnableEpochsHandler,
 ) (*dctLocalBurn, error) {
 	if check.IfNil(marshaller) {
 		return nil, ErrNilMarshalizer
@@ -36,6 +39,9 @@ func NewDCTLocalBurnFunc(
 	if check.IfNil(rolesHandler) {
 		return nil, ErrNilRolesHandler
 	}
+	if check.IfNil(enableEpochsHandler) {
+		return nil, ErrNilEnableEpochsHandler
+	}
 
 	e := &dctLocalBurn{
 		keyPrefix:             []byte(baseDCTKeyPrefix),
@@ -43,6 +49,7 @@ func NewDCTLocalBurnFunc(
 		globalSettingsHandler: globalSettingsHandler,
 		rolesHandler:          rolesHandler,
 		funcGasCost:           funcGasCost,
+		enableEpochsHandler:   enableEpochsHandler,
 		mutExecution:          sync.RWMutex{},
 	}
 
@@ -79,6 +86,12 @@ func (e *dctLocalBurn) ProcessBuiltinFunction(
 		return nil, err
 	}
 
+	if e.enableEpochsHandler.IsConsistentTokensValuesLengthCheckEnabled() {
+		// TODO: core.MaxLenForDCTIssueMint should be renamed to something more general, such as MaxLenForDCTValues
+		if len(vmInput.Arguments[1]) > core.MaxLenForDCTIssueMint {
+			return nil, fmt.Errorf("%w: max length for dct local burn value is %d", ErrInvalidArguments, core.MaxLenForDCTIssueMint)
+		}
+	}
 	value := big.NewInt(0).SetBytes(vmInput.Arguments[1])
 	dctTokenKey := append(e.keyPrefix, tokenID...)
 	err = addToDCTBalance(acntSnd, dctTokenKey, big.NewInt(0).Neg(value), e.marshaller, e.globalSettingsHandler, vmInput.ReturnCallAfterError)

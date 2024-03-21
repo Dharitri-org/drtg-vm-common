@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/Dharitri-org/drtg-core/core"
 	"github.com/Dharitri-org/drtg-core/data/dct"
 	vmcommon "github.com/Dharitri-org/drtg-vm-common"
 	"github.com/Dharitri-org/drtg-vm-common/mock"
@@ -174,6 +175,37 @@ func TestDctDeleteMetaData_ProcessBuiltinFunctionErrors(t *testing.T) {
 	vmOutput, err = e.ProcessBuiltinFunction(nil, nil, vmInput)
 	assert.Nil(t, vmOutput)
 	assert.Equal(t, err, testErr)
+}
+
+func TestDctDeleteMetaData_ProcessBuiltinFunctionGetNodeFromDbErr(t *testing.T) {
+	t.Parallel()
+
+	args := createMockArgsForNewDCTDelete()
+	args.Delete = false
+	args.Accounts = &mock.AccountsStub{
+		LoadAccountCalled: func(address []byte) (vmcommon.AccountHandler, error) {
+			return &mock.AccountWrapMock{
+				RetrieveValueCalled: func(_ []byte) ([]byte, uint32, error) {
+					return nil, 0, core.NewGetNodeFromDBErrWithKey([]byte("key"), errors.New("error"), "")
+				},
+			}, nil
+		},
+	}
+	dctMetadata := &dct.MetaData{Name: []byte("something"), Nonce: 1}
+	marshalledData, _ := args.Marshalizer.Marshal(dctMetadata)
+	e, _ := NewDCTDeleteMetadataFunc(args)
+	vmInput := &vmcommon.ContractCallInput{
+		VMInput: vmcommon.VMInput{
+			CallValue:  big.NewInt(0),
+			CallerAddr: e.allowedAddress,
+			Arguments:  [][]byte{[]byte("TOKEN-ababab"), {1}, marshalledData},
+		},
+		RecipientAddr: e.allowedAddress,
+	}
+
+	output, err := e.ProcessBuiltinFunction(nil, nil, vmInput)
+	assert.Nil(t, output)
+	assert.True(t, core.IsGetNodeFromDBError(err))
 }
 
 func TestDctDeleteMetaData_ProcessBuiltinFunctionAdd(t *testing.T) {

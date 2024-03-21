@@ -133,6 +133,22 @@ func TestDctDataStorage_GetDCTNFTTokenOnDestinationNoDataInSystemAcc(t *testing.
 	assert.Equal(t, dctData, dctDataGet)
 }
 
+func TestDctDataStorage_GetDCTNFTTokenOnDestinationGetNodeFromDbErr(t *testing.T) {
+	t.Parallel()
+
+	args := createMockArgsForNewDCTDataStorage()
+	e, _ := NewDCTDataStorage(args)
+
+	userAcc := mock.NewAccountWrapMock([]byte("addr"))
+	userAcc.RetrieveValueCalled = func(key []byte) ([]byte, uint32, error) {
+		return nil, 0, core.NewGetNodeFromDBErrWithKey(key, errors.New("error"), "")
+	}
+
+	dctDataGet, _, err := e.GetDCTNFTTokenOnDestination(userAcc, []byte("key"), 1)
+	assert.Nil(t, dctDataGet)
+	assert.True(t, core.IsGetNodeFromDBError(err))
+}
+
 func TestDctDataStorage_GetDCTNFTTokenOnDestinationGetDataFromSystemAcc(t *testing.T) {
 	t.Parallel()
 
@@ -280,6 +296,53 @@ func TestDCTDataStorage_saveDataToSystemAccNotNFTOrMetaData(t *testing.T) {
 
 	err = e.saveDCTMetaDataToSystemAccount(nil, 0, []byte("TCK"), 1, &dct.DCToken{}, true)
 	assert.Nil(t, err)
+}
+
+func TestDCTDataStorage_saveDCTMetaDataToSystemAccountGetNodeFromDbErrForSystemAcc(t *testing.T) {
+	t.Parallel()
+
+	systemAcc := mock.NewAccountWrapMock([]byte("system acc address"))
+	systemAcc.RetrieveValueCalled = func(key []byte) ([]byte, uint32, error) {
+		return nil, 0, core.NewGetNodeFromDBErrWithKey(key, errors.New("error"), "")
+	}
+
+	args := createMockArgsForNewDCTDataStorage()
+	args.Accounts = &mock.AccountsStub{
+		LoadAccountCalled: func(address []byte) (vmcommon.AccountHandler, error) {
+			return systemAcc, nil
+		},
+	}
+	e, _ := NewDCTDataStorage(args)
+
+	dctData := &dct.DCToken{
+		TokenMetaData: &dct.MetaData{},
+	}
+
+	err := e.saveDCTMetaDataToSystemAccount(nil, 0, []byte("TCK"), 1, dctData, true)
+	assert.True(t, core.IsGetNodeFromDBError(err))
+}
+
+func TestDCTDataStorage_saveDCTMetaDataToSystemAccountGetNodeFromDbErrForUserAcc(t *testing.T) {
+	t.Parallel()
+
+	args := createMockArgsForNewDCTDataStorage()
+	args.EnableEpochsHandler = &mock.EnableEpochsHandlerStub{
+		IsFixOldTokenLiquidityEnabledField: true,
+		IsSendAlwaysFlagEnabledField:       true,
+	}
+	e, _ := NewDCTDataStorage(args)
+
+	dctData := &dct.DCToken{
+		TokenMetaData: &dct.MetaData{},
+	}
+
+	userAcc := mock.NewAccountWrapMock([]byte("addr"))
+	userAcc.RetrieveValueCalled = func(key []byte) ([]byte, uint32, error) {
+		return nil, 0, core.NewGetNodeFromDBErrWithKey(key, errors.New("error"), "")
+	}
+
+	err := e.saveDCTMetaDataToSystemAccount(userAcc, 0, []byte("TCK"), 1, dctData, true)
+	assert.True(t, core.IsGetNodeFromDBError(err))
 }
 
 func TestDctDataStorage_SaveDCTNFTTokenNoChangeInSystemAcc(t *testing.T) {
@@ -654,6 +717,27 @@ func TestDctDataStorage_SaveNFTMetaDataToSystemAccount(t *testing.T) {
 	assert.Equal(t, dctData.TokenMetaData, dctGetData.TokenMetaData)
 }
 
+func TestDctDataStorage_getDCTDigitalTokenDataFromSystemAccountGetNodeFromDbErr(t *testing.T) {
+	t.Parallel()
+
+	systemAcc := mock.NewAccountWrapMock([]byte("system acc address"))
+	systemAcc.RetrieveValueCalled = func(key []byte) ([]byte, uint32, error) {
+		return nil, 0, core.NewGetNodeFromDBErrWithKey(key, errors.New("error"), "")
+	}
+
+	args := createMockArgsForNewDCTDataStorage()
+	args.Accounts = &mock.AccountsStub{
+		LoadAccountCalled: func(address []byte) (vmcommon.AccountHandler, error) {
+			return systemAcc, nil
+		},
+	}
+	e, _ := NewDCTDataStorage(args)
+
+	dctDataGet, _, err := e.getDCTDigitalTokenDataFromSystemAccount([]byte("tokenKey"), defaultQueryOptions())
+	assert.Nil(t, dctDataGet)
+	assert.True(t, core.IsGetNodeFromDBError(err))
+}
+
 func TestDctDataStorage_SaveNFTMetaDataToSystemAccountWithMultiTransfer(t *testing.T) {
 	t.Parallel()
 
@@ -764,6 +848,36 @@ func TestDctDataStorage_checkCollectionFrozen(t *testing.T) {
 
 	err = e.checkCollectionIsFrozenForAccount(userAcc, dctTokenKey, 1, false)
 	assert.Equal(t, err, ErrDCTIsFrozenForAccount)
+}
+
+func TestGetDctDataFromKey(t *testing.T) {
+	t.Parallel()
+
+	userAcc := mock.NewAccountWrapMock([]byte("addr"))
+	userAcc.RetrieveValueCalled = func(key []byte) ([]byte, uint32, error) {
+		return nil, 0, core.NewGetNodeFromDBErrWithKey(key, errors.New("error"), "")
+	}
+	tokenData, err := getDCTDataFromKey(userAcc, []byte("dctTokenKey"), &mock.MarshalizerMock{})
+	assert.Nil(t, tokenData)
+	assert.True(t, core.IsGetNodeFromDBError(err))
+}
+
+func TestDctDataStorage_checkCollectionFrozenGetNodeFromDbErr(t *testing.T) {
+	t.Parallel()
+
+	args := createMockArgsForNewDCTDataStorage()
+	args.EnableEpochsHandler = &mock.EnableEpochsHandlerStub{
+		IsCheckFrozenCollectionFlagEnabledField: true,
+	}
+	e, _ := NewDCTDataStorage(args)
+
+	userAcc := mock.NewAccountWrapMock([]byte("addr"))
+	userAcc.RetrieveValueCalled = func(key []byte) ([]byte, uint32, error) {
+		return nil, 0, core.NewGetNodeFromDBErrWithKey(key, errors.New("error"), "")
+	}
+
+	err := e.checkCollectionIsFrozenForAccount(userAcc, []byte("key"), 1, false)
+	assert.True(t, core.IsGetNodeFromDBError(err))
 }
 
 func TestDctDataStorage_AddToLiquiditySystemAcc(t *testing.T) {

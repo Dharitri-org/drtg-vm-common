@@ -3,13 +3,14 @@ module github.com/Dharitri-org/drtg-vm-common
 go 1.20
 
 require (
-	github.com/Dharitri-org/drtg-core v0.0.1
-	github.com/Dharitri-org/drtg-logger v0.0.4
+	github.com/Dharitri-org/drtg-core v0.0.4
+	github.com/Dharitri-org/drtg-logger v0.0.5
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/stretchr/testify v1.9.0
 )
 
 require (
+	github.com/btcsuite/btcd/btcutil v1.1.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect

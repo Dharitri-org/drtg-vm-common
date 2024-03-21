@@ -3,12 +3,13 @@ package builtInFunctions
 import (
 	"bytes"
 
-	"github.com/Dharitri-org/drtg-vm-common"
-	"github.com/Dharitri-org/drtg-vm-common/check"
-	"github.com/Dharitri-org/drtg-vm-common/data/dct"
+	"github.com/Dharitri-org/drtg-core/core"
+	"github.com/Dharitri-org/drtg-core/core/check"
+	"github.com/Dharitri-org/drtg-core/data/dct"
+	vmcommon "github.com/Dharitri-org/drtg-vm-common"
 )
 
-var roleKeyPrefix = []byte(vmcommon.DharitriProtectedKeyPrefix + vmcommon.DCTRoleIdentifier + vmcommon.DCTKeyIdentifier)
+var roleKeyPrefix = []byte(core.DharitriProtectedKeyPrefix + core.DCTRoleIdentifier + core.DCTKeyIdentifier)
 
 type dctRoles struct {
 	baseAlwaysActive
@@ -46,7 +47,7 @@ func (e *dctRoles) ProcessBuiltinFunction(
 	if err != nil {
 		return nil, err
 	}
-	if !bytes.Equal(vmInput.CallerAddr, vmcommon.DCTSCAddress) {
+	if !bytes.Equal(vmInput.CallerAddr, core.DCTSCAddress) {
 		return nil, ErrAddressIsNotDCTSystemSC
 	}
 	if check.IfNil(acntDst) {

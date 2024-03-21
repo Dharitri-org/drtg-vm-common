@@ -153,6 +153,7 @@ func (e *dctNFTCreateRoleTransfer) executeTransferNFTCreateChangeAtCurrentOwner(
 		OutputTransfers: make([]vmcommon.OutputTransfer, 0),
 	}
 	outTransfer := vmcommon.OutputTransfer{
+		Index: 1,
 		Value: big.NewInt(0),
 		Data: []byte(core.BuiltInFunctionDCTNFTCreateRoleTransfer + "@" +
 			hex.EncodeToString(tokenID) + "@" + hex.EncodeToString(big.NewInt(0).SetUint64(nonce).Bytes())),

@@ -16,6 +16,7 @@ type dctLocalMint struct {
 	marshaller            vmcommon.Marshalizer
 	globalSettingsHandler vmcommon.DCTGlobalSettingsHandler
 	rolesHandler          vmcommon.DCTRoleHandler
+	enableEpochsHandler   vmcommon.EnableEpochsHandler
 	funcGasCost           uint64
 	mutExecution          sync.RWMutex
 }
@@ -26,6 +27,7 @@ func NewDCTLocalMintFunc(
 	marshaller vmcommon.Marshalizer,
 	globalSettingsHandler vmcommon.DCTGlobalSettingsHandler,
 	rolesHandler vmcommon.DCTRoleHandler,
+	enableEpochsHandler vmcommon.EnableEpochsHandler,
 ) (*dctLocalMint, error) {
 	if check.IfNil(marshaller) {
 		return nil, ErrNilMarshalizer
@@ -36,6 +38,9 @@ func NewDCTLocalMintFunc(
 	if check.IfNil(rolesHandler) {
 		return nil, ErrNilRolesHandler
 	}
+	if check.IfNil(enableEpochsHandler) {
+		return nil, ErrNilEnableEpochsHandler
+	}
 
 	e := &dctLocalMint{
 		keyPrefix:             []byte(baseDCTKeyPrefix),
@@ -43,6 +48,7 @@ func NewDCTLocalMintFunc(
 		globalSettingsHandler: globalSettingsHandler,
 		rolesHandler:          rolesHandler,
 		funcGasCost:           funcGasCost,
+		enableEpochsHandler:   enableEpochsHandler,
 		mutExecution:          sync.RWMutex{},
 	}
 
@@ -80,6 +86,10 @@ func (e *dctLocalMint) ProcessBuiltinFunction(
 	}
 
 	if len(vmInput.Arguments[1]) > core.MaxLenForDCTIssueMint {
+		if e.enableEpochsHandler.IsConsistentTokensValuesLengthCheckEnabled() {
+			return nil, fmt.Errorf("%w: max length for dct local mint value is %d", ErrInvalidArguments, core.MaxLenForDCTIssueMint)
+		}
+		// backward compatibility - return old error
 		return nil, fmt.Errorf("%w max length for dct issue is %d", ErrInvalidArguments, core.MaxLenForDCTIssueMint)
 	}
 

@@ -10,8 +10,9 @@ import (
 )
 
 var log = logger.GetOrCreate("parse-tests")
+var addressPrefix = "moa"
 
-var pubKeyConv, _ = pubkeyConverter.NewBech32PubkeyConverter(32, log)
+var pubKeyConv, _ = pubkeyConverter.NewBech32PubkeyConverter(32, addressPrefix)
 
 var sender, _ = pubKeyConv.Decode("moa1kqdm94ef5dr9nz3208rrsdzkgwkz53saj4t5chx26cm4hlq8qz8qd4r9nw")
 var receiver, _ = pubKeyConv.Decode("moa1kszzq4egxj5m3t22vt2s8vplmxmqrstghecmnk3tq9mn5fdy7pqq95yeqc")

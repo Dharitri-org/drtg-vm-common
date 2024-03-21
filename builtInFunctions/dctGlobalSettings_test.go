@@ -1,6 +1,7 @@
 package builtInFunctions
 
 import (
+	"errors"
 	"math/big"
 	"testing"
 
@@ -107,6 +108,41 @@ func TestDCTGlobalSettingsPause_ProcessBuiltInFunction(t *testing.T) {
 
 	assert.False(t, globalSettingsFunc.IsPaused(pauseKey))
 	assert.False(t, globalSettingsFunc.IsLimitedTransfer(pauseKey))
+}
+
+func TestDCTGlobalSettingsPause_ProcessBuiltInFunctionGetNodeFromDbErr(t *testing.T) {
+	t.Parallel()
+
+	globalSettingsFunc, _ := NewDCTGlobalSettingsFunc(
+		&mock.AccountsStub{
+			LoadAccountCalled: func(_ []byte) (vmcommon.AccountHandler, error) {
+				return &mock.AccountWrapMock{
+					RetrieveValueCalled: func(_ []byte) ([]byte, uint32, error) {
+						return nil, 0, core.NewGetNodeFromDBErrWithKey([]byte("key"), errors.New("error"), "")
+					},
+				}, nil
+			},
+		},
+		&mock.MarshalizerMock{},
+		true,
+		core.BuiltInFunctionDCTPause,
+		falseHandler,
+	)
+
+	key := []byte("key")
+	input := &vmcommon.ContractCallInput{
+		VMInput: vmcommon.VMInput{
+			GasProvided: 50,
+			CallValue:   big.NewInt(0),
+			Arguments:   [][]byte{key},
+			CallerAddr:  core.DCTSCAddress,
+		},
+		RecipientAddr: vmcommon.SystemAccountAddress,
+	}
+
+	output, err := globalSettingsFunc.ProcessBuiltinFunction(nil, nil, input)
+	assert.Nil(t, output)
+	assert.True(t, core.IsGetNodeFromDBError(err))
 }
 
 func TestDCTGlobalSettingsLimitedTransfer_ProcessBuiltInFunction(t *testing.T) {

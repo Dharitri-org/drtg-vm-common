@@ -179,6 +179,7 @@ func (e *dctNFTTransfer) ProcessBuiltinFunction(
 		}
 
 		addOutputTransferToVMOutput(
+			1,
 			vmInput.CallerAddr,
 			string(vmInput.Arguments[core.MinLenArgumentsDCTNFTTransfer]),
 			callArgs,
@@ -224,6 +225,9 @@ func (e *dctNFTTransfer) processNFTTransferOnSenderShard(
 		return nil, ErrNFTDoesNotHaveMetadata
 	}
 
+	if len(vmInput.Arguments[2]) > core.MaxLenForDCTIssueMint && e.enableEpochsHandler.IsConsistentTokensValuesLengthCheckEnabled() {
+		return nil, fmt.Errorf("%w: max length for a transfer value is %d", ErrInvalidArguments, core.MaxLenForDCTIssueMint)
+	}
 	quantityToTransfer := big.NewInt(0).SetBytes(vmInput.Arguments[2])
 	if dctData.Value.Cmp(quantityToTransfer) < 0 {
 		return nil, ErrInvalidNFTQuantity
@@ -343,6 +347,7 @@ func (e *dctNFTTransfer) createNFTOutputTransfers(
 			vmOutput.GasRemaining = 0
 		}
 		addNFTTransferToVMOutput(
+			1,
 			vmInput.CallerAddr,
 			dstAddress,
 			core.BuiltInFunctionDCTNFTTransfer,
@@ -363,6 +368,7 @@ func (e *dctNFTTransfer) createNFTOutputTransfers(
 		}
 
 		addOutputTransferToVMOutput(
+			1,
 			vmInput.CallerAddr,
 			string(vmInput.Arguments[core.MinLenArgumentsDCTNFTTransfer]),
 			callArgs,
@@ -412,6 +418,7 @@ func (e *dctNFTTransfer) addNFTToDestination(
 }
 
 func addNFTTransferToVMOutput(
+	index uint32,
 	senderAddress []byte,
 	recipient []byte,
 	funcToCall string,
@@ -426,6 +433,7 @@ func addNFTTransferToVMOutput(
 		nftTransferTxData += "@" + hex.EncodeToString(arg)
 	}
 	outTransfer := vmcommon.OutputTransfer{
+		Index:         index,
 		Value:         big.NewInt(0),
 		GasLimit:      gasLimit,
 		GasLocked:     gasLocked,

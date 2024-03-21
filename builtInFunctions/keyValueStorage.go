@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"sync"
 
+	"github.com/Dharitri-org/drtg-core/core"
 	"github.com/Dharitri-org/drtg-core/core/check"
 	vmcommon "github.com/Dharitri-org/drtg-vm-common"
 )
@@ -71,7 +72,10 @@ func (k *saveKeyValueStorage) ProcessBuiltinFunction(
 			return nil, fmt.Errorf("%w it is not allowed to save under key %s", ErrOperationNotPermitted, key)
 		}
 
-		oldValue, _, _ := acntDest.AccountDataHandler().RetrieveValue(key)
+		oldValue, _, err := acntDest.AccountDataHandler().RetrieveValue(key)
+		if core.IsGetNodeFromDBError(err) {
+			return nil, err
+		}
 		if bytes.Equal(oldValue, value) {
 			continue
 		}

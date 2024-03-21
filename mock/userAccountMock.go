@@ -5,7 +5,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/Dharitri-org/drtg-vm-common"
+	vmcommon "github.com/Dharitri-org/drtg-vm-common"
 )
 
 // ErrOperationNotPermitted indicates an operation rejected due to insufficient

@@ -1,7 +1,7 @@
 package parsers
 
 import (
-	"github.com/Dharitri-org/drtg-vm-common"
+	vmcommon "github.com/Dharitri-org/drtg-vm-common"
 )
 
 type deployArgsParser struct {

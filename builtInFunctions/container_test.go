@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Dharitri-org/drtg-vm-common/check"
+	"github.com/Dharitri-org/drtg-core/core/check"
 	"github.com/Dharitri-org/drtg-vm-common/mock"
 	"github.com/stretchr/testify/assert"
 )

@@ -3,8 +3,8 @@ package builtInFunctions
 import (
 	"fmt"
 
+	"github.com/Dharitri-org/drtg-core/core/check"
 	vmcommon "github.com/Dharitri-org/drtg-vm-common"
-	"github.com/Dharitri-org/drtg-vm-common/check"
 	"github.com/Dharitri-org/drtg-vm-common/container"
 )
 

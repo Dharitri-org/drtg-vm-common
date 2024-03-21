@@ -65,6 +65,9 @@ type VMInput struct {
 
 	// ReturnCallAfterError
 	ReturnCallAfterError bool
+
+	// GuardianSigned specifies whether the transaction was signed by the guardian
+	TxGuardian []byte
 }
 
 // DCTTransfer defines the structure for and DCT / NFT transfer

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDharitriEI_validateToken(t *testing.T) {
+func TestEI_validateToken(t *testing.T) {
 	var result bool
 	result = ValidateToken([]byte("MOAXRIDEFL-08d8eff"))
 	assert.False(t, result)

@@ -2,10 +2,8 @@ module github.com/Dharitri-org/drtg-vm-common
 
 go 1.20
 
-replace github.com/gogo/protobuf => github.com/Dharitri-org/protobuf v1.3.2
-
 require (
-	github.com/Dharitri-org/drtg-core v0.0.4
+	github.com/Dharitri-org/drtg-core v0.0.7
 	github.com/Dharitri-org/drtg-logger v0.0.5
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/stretchr/testify v1.9.0

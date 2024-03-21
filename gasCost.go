@@ -28,6 +28,8 @@ type BuiltInCost struct {
 	DCTNFTMultiTransfer     uint64
 	DCTNFTAddURI            uint64
 	DCTNFTUpdateAttributes  uint64
+	SetGuardian             uint64
+	GuardAccount            uint64
 }
 
 // GasCost holds all the needed gas costs for system smart contracts

@@ -113,13 +113,10 @@ func (e *dctGlobalSettings) toggleSetting(dctTokenKey []byte) error {
 	switch e.function {
 	case core.BuiltInFunctionDCTSetLimitedTransfer, core.BuiltInFunctionDCTUnSetLimitedTransfer:
 		dctMetaData.LimitedTransfer = e.set
-		break
 	case core.BuiltInFunctionDCTPause, core.BuiltInFunctionDCTUnPause:
 		dctMetaData.Paused = e.set
-		break
 	case vmcommon.BuiltInFunctionDCTUnSetBurnRoleForAll, vmcommon.BuiltInFunctionDCTSetBurnRoleForAll:
 		dctMetaData.BurnRoleForAll = e.set
-		break
 	}
 
 	err = systemSCAccount.AccountDataHandler().SaveKeyValue(dctTokenKey, dctMetaData.ToBytes())

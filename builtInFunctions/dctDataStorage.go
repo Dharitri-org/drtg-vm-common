@@ -582,9 +582,7 @@ func (e *dctDataStorage) WasAlreadySentToDestinationShardAndUpdateState(
 
 	if uint32(len(dctData.Properties)) < e.shardCoordinator.NumberOfShards() {
 		newSlice := make([]byte, e.shardCoordinator.NumberOfShards())
-		for i, val := range dctData.Properties {
-			newSlice[i] = val
-		}
+		copy(newSlice, dctData.Properties)
 		dctData.Properties = newSlice
 	}
 

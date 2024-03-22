@@ -5,11 +5,9 @@ import (
 	"testing"
 
 	"github.com/Dharitri-org/drtg-core/core/pubkeyConverter"
-	logger "github.com/Dharitri-org/drtg-logger"
 	"github.com/stretchr/testify/require"
 )
 
-var log = logger.GetOrCreate("parse-tests")
 var addressPrefix = "moa"
 
 var pubKeyConv, _ = pubkeyConverter.NewBech32PubkeyConverter(32, addressPrefix)

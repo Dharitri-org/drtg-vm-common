@@ -393,6 +393,7 @@ type EnableEpochsHandler interface {
 	IsChangeOwnerAddressCrossShardThroughSCEnabled() bool
 	FixGasRemainingForSaveKeyValueBuiltinFunctionEnabled() bool
 
+
 	MultiDCTTransferAsyncCallBackEnableEpoch() uint32
 	FixOOGReturnCodeEnableEpoch() uint32
 	RemoveNonUpdatedStorageEnableEpoch() uint32

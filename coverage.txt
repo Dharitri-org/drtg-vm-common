@@ -130,6 +130,21 @@ github.com/Dharitri-org/drtg-vm-common/returnCodes.go:26.25,27.31 1 0
 github.com/Dharitri-org/drtg-vm-common/returnCodes.go:28.23,29.28 1 0
 github.com/Dharitri-org/drtg-vm-common/returnCodes.go:30.23,31.28 1 0
 github.com/Dharitri-org/drtg-vm-common/returnCodes.go:32.10,33.52 1 0
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:27.74,34.2 1 7
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:38.59,39.41 1 3
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:39.41,41.3 1 1
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:43.2,45.44 2 2
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:50.129,51.44 1 5
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:51.44,53.3 1 1
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:55.2,55.47 1 4
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:55.47,57.3 1 3
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:59.2,59.52 1 4
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:62.91,63.43 1 3
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:63.43,65.3 1 1
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:67.2,69.67 2 2
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:73.70,75.2 1 1
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:78.55,80.2 1 2
+github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:83.52,85.2 1 1
 github.com/Dharitri-org/drtg-vm-common/parsers/callArgsParser.go:9.42,11.2 1 4
 github.com/Dharitri-org/drtg-vm-common/parsers/callArgsParser.go:15.80,20.16 4 5
 github.com/Dharitri-org/drtg-vm-common/parsers/callArgsParser.go:20.16,22.3 1 2
@@ -256,6 +271,8 @@ github.com/Dharitri-org/drtg-vm-common/parsers/tokenize.go:35.52,36.24 1 2
 github.com/Dharitri-org/drtg-vm-common/parsers/tokenize.go:36.24,38.3 1 1
 github.com/Dharitri-org/drtg-vm-common/parsers/tokenize.go:40.2,40.29 1 1
 
+
+
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:12.30,16.2 1 13
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:19.62,25.2 4 107
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:29.67,33.9 3 102
@@ -268,8 +285,9 @@ github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:65.42,68.27 3 102
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:68.27,70.3 1 303
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:71.2,73.13 2 102
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:77.44,80.34 3 103
-github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:80.34,82.3 1 5154
+github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:80.34,82.3 1 5155
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:83.2,85.15 2 103
+
 
 github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:27.74,34.2 1 7
 github.com/Dharitri-org/drtg-vm-common/dataTrieMigrator/dataTrieMigrator.go:38.59,39.41 1 3
@@ -398,6 +416,7 @@ github.com/Dharitri-org/drtg-vm-common/parsers/dataField/utils.go:105.34,106.34 
 github.com/Dharitri-org/drtg-vm-common/parsers/dataField/utils.go:106.34,108.4 1 4
 github.com/Dharitri-org/drtg-vm-common/parsers/dataField/utils.go:111.2,111.13 1 31
 
+
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:12.30,16.2 1 13
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:19.62,25.2 4 107
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:29.67,33.9 3 102
@@ -412,6 +431,7 @@ github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:71.2,73.13 2 102
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:77.44,80.34 3 103
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:80.34,82.3 1 5155
 github.com/Dharitri-org/drtg-vm-common/container/mutexMap.go:83.2,85.15 2 103
+
 
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/baseAccountGuarder.go:32.86,33.34 1 29
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/baseAccountGuarder.go:33.34,35.3 1 3
@@ -1847,42 +1867,49 @@ github.com/Dharitri-org/drtg-vm-common/builtInFunctions/guardAccount.go:40.2,51.
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/guardAccount.go:54.62,56.26 2 2
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/guardAccount.go:56.26,58.3 1 1
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/guardAccount.go:60.2,62.12 3 1
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:25.33,32.2 2 7
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:35.74,36.20 1 2
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:36.20,38.3 1 0
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:40.2,43.25 4 2
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:50.31,55.16 4 11
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:55.16,57.3 1 6
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:59.2,65.47 3 5
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:65.47,71.45 5 6
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:71.45,73.4 1 0
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:75.3,76.37 2 6
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:76.37,78.4 1 1
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:79.3,79.35 1 5
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:79.35,80.12 1 0
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:83.3,86.38 4 5
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:86.38,88.4 1 5
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:90.3,91.33 2 5
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:91.33,93.4 1 1
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:97.3,98.17 2 4
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:98.17,100.4 1 0
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:103.2,105.22 2 3
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:108.114,109.18 1 11
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:109.18,111.3 1 1
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:112.2,112.30 1 10
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:112.30,114.3 1 1
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:115.2,115.33 1 9
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:115.33,117.3 1 1
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:118.2,118.36 1 8
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:118.36,120.3 1 0
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:121.2,121.26 1 8
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:121.26,123.3 1 1
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:124.2,124.57 1 7
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:124.57,126.3 1 2
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:127.2,127.55 1 5
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:127.55,129.3 1 0
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:131.2,131.12 1 5
-github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:135.53,137.2 1 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:27.33,28.38 1 11
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:28.38,30.3 1 1
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:32.2,38.15 2 10
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:42.74,43.20 1 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:43.20,45.3 1 0
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:47.2,50.25 4 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:57.31,62.21 4 16
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:62.21,64.3 1 7
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:66.2,72.47 3 9
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:72.47,78.45 5 11
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:78.45,80.4 1 0
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:82.3,83.37 2 11
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:83.37,85.4 1 1
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:86.3,86.35 1 10
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:86.35,87.12 1 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:90.3,93.38 4 8
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:93.38,95.4 1 8
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:97.3,98.33 2 8
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:98.33,100.4 1 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:104.3,105.17 2 6
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:105.17,107.4 1 0
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:110.2,110.52 1 6
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:113.128,114.83 1 6
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:114.83,119.3 2 4
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:120.2,120.37 1 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:120.37,122.3 1 1
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:124.2,126.22 2 1
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:129.114,130.18 1 16
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:130.18,132.3 1 1
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:133.2,133.30 1 15
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:133.30,135.3 1 1
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:136.2,136.33 1 14
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:136.33,138.3 1 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:139.2,139.36 1 12
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:139.36,141.3 1 0
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:142.2,142.26 1 12
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:142.26,144.3 1 1
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:145.2,145.57 1 11
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:145.57,147.3 1 2
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:148.2,148.55 1 9
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:148.55,150.3 1 0
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:152.2,152.12 1 9
+github.com/Dharitri-org/drtg-vm-common/builtInFunctions/keyValueStorage.go:156.53,158.2 1 2
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/logsAndEvents.go:30.3,33.43 2 23
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/logsAndEvents.go:33.43,36.3 2 24
 github.com/Dharitri-org/drtg-vm-common/builtInFunctions/logsAndEvents.go:37.2,46.26 3 23

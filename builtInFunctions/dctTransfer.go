@@ -147,7 +147,7 @@ func (e *dctTransfer) ProcessBuiltinFunction(
 		}
 
 		if isSCCallAfter {
-			vmOutput.GasRemaining, err = vmcommon.SafeSubUint64(vmInput.GasProvided, e.funcGasCost)
+			vmOutput.GasRemaining, _ = vmcommon.SafeSubUint64(vmInput.GasProvided, e.funcGasCost)
 			var callArgs [][]byte
 			if len(vmInput.Arguments) > core.MinLenArgumentsDCTTransfer+1 {
 				callArgs = vmInput.Arguments[core.MinLenArgumentsDCTTransfer+1:]

@@ -66,6 +66,10 @@ func createAccountsAdapterWithMap() vmcommon.AccountsAdapter {
 }
 
 func createDCTNFTMultiTransferWithMockArguments(selfShard uint32, numShards uint32, globalSettingsHandler vmcommon.ExtendedDCTGlobalSettingsHandler) *dctNFTMultiTransfer {
+	return createDCTNFTMultiTransferWithMockArgumentsWithLogEventFlag(selfShard, numShards, globalSettingsHandler, false)
+}
+
+func createDCTNFTMultiTransferWithMockArgumentsWithLogEventFlag(selfShard uint32, numShards uint32, globalSettingsHandler vmcommon.ExtendedDCTGlobalSettingsHandler, isScToScEventLogEnabled bool) *dctNFTMultiTransfer {
 	marshaller := &mock.MarshalizerMock{}
 	shardCoordinator := mock.NewMultiShardsCoordinatorMock(numShards)
 	shardCoordinator.CurrentShard = selfShard
@@ -79,6 +83,7 @@ func createDCTNFTMultiTransferWithMockArguments(selfShard uint32, numShards uint
 		IsDCTNFTImprovementV1FlagEnabledField:                true,
 		IsTransferToMetaFlagEnabledField:                     false,
 		IsCheckCorrectTokenIDForTransferRoleFlagEnabledField: true,
+		IsScToScEventLogEnabledField:                         isScToScEventLogEnabled,
 	}
 	multiTransfer, _ := NewDCTNFTMultiTransferFunc(
 		1,
@@ -1103,4 +1108,82 @@ func TestComputeInsufficientQuantityDCTError(t *testing.T) {
 	resErr = computeInsufficientQuantityDCTError([]byte("my-token-2"), 5)
 	require.NotNil(t, resErr)
 	require.Equal(t, errors.New("insufficient quantity for token: my-token-2 nonce 5").Error(), resErr.Error())
+}
+
+func TestDCTNFTMultiTransfer_LogEventsEpochActivationTest(t *testing.T) {
+	t.Parallel()
+
+	vmOutput, err := runMultiTransfer(t, false)
+	require.Nil(t, err)
+	require.Equal(t, vmcommon.Ok, vmOutput.ReturnCode)
+
+	require.Equal(t, 2, len(vmOutput.Logs))
+	require.Equal(t, []byte("MultiDCTNFTTransfer"), vmOutput.Logs[0].Identifier)
+	require.Equal(t, 4, len(vmOutput.Logs[0].Topics))
+	require.Equal(t, []byte("token1"), vmOutput.Logs[0].Topics[0])
+	require.Equal(t, []byte("MultiDCTNFTTransfer"), vmOutput.Logs[1].Identifier)
+	require.Equal(t, 4, len(vmOutput.Logs[1].Topics))
+	require.Equal(t, []byte("token2"), vmOutput.Logs[1].Topics[0])
+
+	vmOutput, err = runMultiTransfer(t, true)
+	require.Nil(t, err)
+	require.Equal(t, vmcommon.Ok, vmOutput.ReturnCode)
+
+	require.Equal(t, 1, len(vmOutput.Logs))
+	require.Equal(t, []byte("MultiDCTNFTTransfer"), vmOutput.Logs[0].Identifier)
+	require.Equal(t, 7, len(vmOutput.Logs[0].Topics))
+	require.Equal(t, []byte("token1"), vmOutput.Logs[0].Topics[0])
+	require.Equal(t, []byte("token2"), vmOutput.Logs[0].Topics[3])
+}
+
+func runMultiTransfer(t *testing.T, isScToScEventLogEnabled bool) (*vmcommon.VMOutput, error) {
+	payableHandler := &mock.PayableHandlerStub{
+		IsPayableCalled: func(address []byte) (bool, error) {
+			return true, nil
+		},
+	}
+
+	multiTransferSenderShard := createDCTNFTMultiTransferWithMockArgumentsWithLogEventFlag(0, 2, &mock.GlobalSettingsHandlerStub{}, isScToScEventLogEnabled)
+	_ = multiTransferSenderShard.SetPayableChecker(payableHandler)
+
+	multiTransferDestinationShard := createDCTNFTMultiTransferWithMockArgumentsWithLogEventFlag(1, 2, &mock.GlobalSettingsHandlerStub{}, isScToScEventLogEnabled)
+	_ = multiTransferDestinationShard.SetPayableChecker(payableHandler)
+
+	senderAddress := bytes.Repeat([]byte{2}, 32) // sender is in the same shard
+	destinationAddress := bytes.Repeat([]byte{1}, 32)
+	sender, err := multiTransferSenderShard.accounts.LoadAccount(senderAddress)
+	require.Nil(t, err)
+
+	token1 := []byte("token1")
+	token2 := []byte("token2")
+	tokenNonce := uint64(1)
+	token2Nonce := uint64(2)
+
+	initialTokens := big.NewInt(3)
+	createDCTNFTToken(token1, core.NonFungible, tokenNonce, initialTokens, multiTransferSenderShard.marshaller, sender.(vmcommon.UserAccountHandler))
+	createDCTNFTToken(token2, core.NonFungible, token2Nonce, initialTokens, multiTransferSenderShard.marshaller, sender.(vmcommon.UserAccountHandler))
+
+	_ = multiTransferSenderShard.accounts.SaveAccount(sender)
+	_, _ = multiTransferSenderShard.accounts.Commit()
+
+	// reload sender account
+	sender, err = multiTransferSenderShard.accounts.LoadAccount(senderAddress)
+	require.Nil(t, err)
+
+	nonceBytes := big.NewInt(int64(tokenNonce)).Bytes()
+	nonce2Bytes := big.NewInt(int64(token2Nonce)).Bytes()
+	quantityBytes := big.NewInt(1).Bytes()
+	vmInput := &vmcommon.ContractCallInput{
+		VMInput: vmcommon.VMInput{
+			CallValue:  big.NewInt(0),
+			CallerAddr: senderAddress,
+			Arguments: [][]byte{destinationAddress, big.NewInt(2).Bytes(),
+				token1, nonceBytes, quantityBytes,
+				token2, nonce2Bytes, quantityBytes},
+			GasProvided: 100000,
+		},
+		RecipientAddr: senderAddress,
+	}
+
+	return multiTransferSenderShard.ProcessBuiltinFunction(sender.(vmcommon.UserAccountHandler), nil, vmInput)
 }

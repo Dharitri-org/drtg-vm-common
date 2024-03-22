@@ -162,6 +162,7 @@ func (e *dctNFTMultiTransfer) ProcessBuiltinFunction(
 		return nil, err
 	}
 
+	topicTokenData := make([]*TopicTokenData, 0)
 	for i := uint64(0); i < numOfTransfers; i++ {
 		tokenStartIndex := startIndex + i*argumentsPerTransfer
 		tokenID := vmInput.Arguments[tokenStartIndex]
@@ -204,7 +205,31 @@ func (e *dctNFTMultiTransfer) ProcessBuiltinFunction(
 			}
 		}
 
-		addDCTEntryInVMOutput(vmOutput, []byte(core.BuiltInFunctionMultiDCTNFTTransfer), tokenID, nonce, value, vmInput.CallerAddr, acntDst.AddressBytes())
+		if e.enableEpochsHandler.IsScToScEventLogEnabled() {
+			topicTokenData = append(topicTokenData,
+				&TopicTokenData{
+					tokenID,
+					nonce,
+					value,
+				})
+		} else {
+			addDCTEntryInVMOutput(vmOutput,
+				[]byte(core.BuiltInFunctionMultiDCTNFTTransfer),
+				tokenID,
+				nonce,
+				value,
+				vmInput.CallerAddr,
+				acntDst.AddressBytes())
+		}
+	}
+
+	if e.enableEpochsHandler.IsScToScEventLogEnabled() {
+		addDCTEntryForTransferInVMOutput(
+			vmInput, vmOutput,
+			[]byte(core.BuiltInFunctionMultiDCTNFTTransfer),
+			acntDst.AddressBytes(),
+			topicTokenData,
+		)
 	}
 
 	// no need to consume gas on destination - sender already paid for it
@@ -280,6 +305,7 @@ func (e *dctNFTMultiTransfer) processDCTNFTMultiTransferOnSenderShard(
 	listDctData := make([]*dct.DCToken, numOfTransfers)
 	listTransferData := make([]*vmcommon.DCTTransfer, numOfTransfers)
 
+	topicTokenData := make([]*TopicTokenData, 0)
 	for i := uint64(0); i < numOfTransfers; i++ {
 		tokenStartIndex := startIndex + i*argumentsPerTransfer
 		if len(vmInput.Arguments[tokenStartIndex+2]) > core.MaxLenForDCTIssueMint && e.enableEpochsHandler.IsConsistentTokensValuesLengthCheckEnabled() {
@@ -308,7 +334,31 @@ func (e *dctNFTMultiTransfer) processDCTNFTMultiTransferOnSenderShard(
 			return nil, fmt.Errorf("%w for token %s", err, string(listTransferData[i].DCTTokenName))
 		}
 
-		addDCTEntryInVMOutput(vmOutput, []byte(core.BuiltInFunctionMultiDCTNFTTransfer), listTransferData[i].DCTTokenName, listTransferData[i].DCTTokenNonce, listTransferData[i].DCTValue, vmInput.CallerAddr, dstAddress)
+		if e.enableEpochsHandler.IsScToScEventLogEnabled() {
+			topicTokenData = append(topicTokenData,
+				&TopicTokenData{
+					listTransferData[i].DCTTokenName,
+					listTransferData[i].DCTTokenNonce,
+					listTransferData[i].DCTValue,
+				})
+		} else {
+			addDCTEntryInVMOutput(vmOutput,
+				[]byte(core.BuiltInFunctionMultiDCTNFTTransfer),
+				listTransferData[i].DCTTokenName,
+				listTransferData[i].DCTTokenNonce,
+				listTransferData[i].DCTValue,
+				vmInput.CallerAddr,
+				dstAddress)
+		}
+	}
+
+	if e.enableEpochsHandler.IsScToScEventLogEnabled() {
+		addDCTEntryForTransferInVMOutput(
+			vmInput, vmOutput,
+			[]byte(core.BuiltInFunctionMultiDCTNFTTransfer),
+			dstAddress,
+			topicTokenData,
+		)
 	}
 
 	if !check.IfNil(acntDst) {

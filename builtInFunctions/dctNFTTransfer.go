@@ -189,7 +189,16 @@ func (e *dctNFTTransfer) ProcessBuiltinFunction(
 			vmOutput)
 	}
 
-	addDCTEntryInVMOutput(vmOutput, []byte(core.BuiltInFunctionDCTNFTTransfer), vmInput.Arguments[0], nonce, value, vmInput.CallerAddr, acntDst.AddressBytes())
+	addDCTEntryForTransferInVMOutput(
+		vmInput, vmOutput,
+		[]byte(core.BuiltInFunctionDCTNFTTransfer),
+		acntDst.AddressBytes(),
+		[]*TopicTokenData{{
+			vmInput.Arguments[0],
+			nonce,
+			value,
+		}},
+	)
 
 	return vmOutput, nil
 }
@@ -297,7 +306,16 @@ func (e *dctNFTTransfer) processNFTTransferOnSenderShard(
 		return nil, err
 	}
 
-	addDCTEntryInVMOutput(vmOutput, []byte(core.BuiltInFunctionDCTNFTTransfer), vmInput.Arguments[0], nonce, quantityToTransfer, vmInput.CallerAddr, dstAddress)
+	addDCTEntryForTransferInVMOutput(
+		vmInput, vmOutput,
+		[]byte(core.BuiltInFunctionDCTNFTTransfer),
+		dstAddress,
+		[]*TopicTokenData{{
+			vmInput.Arguments[0],
+			nonce,
+			quantityToTransfer,
+		}},
+	)
 
 	return vmOutput, nil
 }

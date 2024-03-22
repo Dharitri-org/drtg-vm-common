@@ -390,6 +390,7 @@ type EnableEpochsHandler interface {
 	IsScToScEventLogEnabled() bool
 	IsConsistentTokensValuesLengthCheckEnabled() bool
 	IsAutoBalanceDataTriesEnabled() bool
+	IsChangeOwnerAddressCrossShardThroughSCEnabled() bool
 
 	MultiDCTTransferAsyncCallBackEnableEpoch() uint32
 	FixOOGReturnCodeEnableEpoch() uint32
